@@ -50,17 +50,17 @@ hello_php/
 
 2. **Start the containers**
    ```bash
-   docker-compose up -d
+   docker compose up -d
    ```
 
 3. **Install PHP dependencies**
    ```bash
-   docker-compose exec web composer install
+   docker compose exec web composer install
    ```
 
 4. **Create the configuration file**
    ```bash
-   docker-compose exec web cp config/app.default.php config/app.php
+   docker compose exec web cp config/app.default.php config/app.php
    ```
 
 5. **Access the application**
@@ -70,7 +70,7 @@ hello_php/
 ### Stop the containers
 
 ```bash
-docker-compose down
+docker compose down
 ```
 
 ## Testing Connectivity
@@ -171,26 +171,26 @@ The application uses CakePHP 3.8. Configuration is in `src/config/app.php`:
 
 ```bash
 # View logs
-docker-compose logs web
-docker-compose logs mysql
-docker-compose logs redis
+docker compose logs web
+docker compose logs mysql
+docker compose logs redis
 
 # Access container shell
-docker-compose exec web bash
+docker compose exec web bash
 ```
 
 ### Database Connection
 
 ```bash
 # Connect to MySQL
-docker-compose exec mysql mysql -u root -psecret hello_php
+docker compose exec mysql mysql -u root -psecret hello_php
 ```
 
 ### Redis Connection
 
 ```bash
 # Connect to Redis CLI
-docker-compose exec redis redis-cli
+docker compose exec redis redis-cli
 ```
 
 ## Security Notes
