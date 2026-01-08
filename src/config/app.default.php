@@ -54,7 +54,7 @@ return [
         'paths' => [
             'plugins' => [ROOT . DS . 'plugins' . DS],
             'templates' => [APP . 'Template' . DS],
-            'locales' => [RESOURCES . 'locales' . DS],
+            'locales' => [ROOT . DS . 'resources' . DS . 'locales' . DS],
         ],
     ],
 
