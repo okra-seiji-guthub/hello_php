@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: hello_php_web
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html
+    environment:
+      - DB_HOST=mysql
+      - DB_NAME=hello_php
+      - DB_USER=root
+      - DB_PASSWORD=secret
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - hello_php_network
+
+  mysql:
+    image: mysql:5.7
+    container_name: hello_php_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: hello_php
+      MYSQL_USER: hello_php_user
+      MYSQL_PASSWORD: hello_php_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - hello_php_network
+
+  redis:
+    image: redis:5-alpine
+    container_name: hello_php_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - hello_php_network
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  hello_php_network:
+    driver: bridge
