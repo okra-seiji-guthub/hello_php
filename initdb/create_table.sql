@@ -15,6 +15,7 @@ CREATE TABLE posts (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
+
 -- テストデータの挿入
 INSERT INTO users (name, email) VALUES 
 ('田中 太郎', 'tanaka@example.com'),
@@ -26,3 +27,6 @@ INSERT INTO posts (user_id, title, content) VALUES
 (1, 'PHP 7.2の思い出', '昔のプロジェクトを動かすのに便利ですね。'),
 (2, 'MySQLの学習', '初期データの投入方法を学んでいます。'),
 (3, 'Web開発', 'DockerとPHPでの開発が楽しいです。');
+
+ALTER USER 'user'@'%' IDENTIFIED WITH mysql_native_password BY 'password';
+FLUSH PRIVILEGES;
