@@ -1,0 +1,72 @@
+{
+  "family": "hello-php-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::YOUR_ACCOUNT_ID:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "hello-php-web",
+      "image": "YOUR_ECR_REGISTRY/hello-php:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "DB_HOST",
+          "value": "YOUR_RDS_ENDPOINT"
+        },
+        {
+          "name": "DB_NAME",
+          "value": "hello_php"
+        },
+        {
+          "name": "DB_USER",
+          "value": "hello_php_user"
+        },
+        {
+          "name": "REDIS_HOST",
+          "value": "YOUR_ELASTICACHE_ENDPOINT"
+        },
+        {
+          "name": "REDIS_PORT",
+          "value": "6379"
+        },
+        {
+          "name": "DEBUG",
+          "value": "false"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "DB_PASSWORD",
+          "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT:secret:hello-php/db-password"
+        },
+        {
+          "name": "SECURITY_SALT",
+          "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT:secret:hello-php/security-salt"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/hello-php",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "web"
+        }
+      },
+      "healthCheck": {
+        "command": ["CMD-SHELL", "curl -f http://localhost/info.php || exit 1"],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 60
+      }
+    }
+  ]
+}
