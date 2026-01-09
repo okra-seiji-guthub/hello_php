@@ -21,9 +21,14 @@ services:
       MYSQL_DATABASE: my_database
       MYSQL_USER: user
       MYSQL_PASSWORD: password
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --default-authentication-plugin=mysql_native_password
     volumes:
       - ./mysql-data:/var/lib/mysql
       - ./initdb:/docker-entrypoint-initdb.d
       - ./mysql/conf.d:/etc/mysql/conf.d
+      - ./mysql/conf.d/my.cnf:/etc/mysql/conf.d/my.cnf
     ports:
       - "3306:3306"

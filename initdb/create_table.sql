@@ -1,3 +1,5 @@
+SET NAMES utf8mb4;
+
 -- テーブルの作成
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -24,9 +26,10 @@ INSERT INTO users (name, email) VALUES
 
 INSERT INTO posts (user_id, title, content) VALUES 
 (1, '最初の投稿', 'Dockerでのデータベース接続に成功しました！'),
-(1, 'PHP 7.2の思い出', '昔のプロジェクトを動かすのに便利ですね。'),
-(2, 'MySQLの学習', '初期データの投入方法を学んでいます。'),
-(3, 'Web開発', 'DockerとPHPでの開発が楽しいです。');
+(2, 'PHP 7.2の思い出', '昔のプロジェクトを動かすのに便利ですね。'),
+(3, 'MySQLの学習', '初期データの投入方法を学んでいます。'),
+(2, 'Web開発', 'DockerとPHPでの開発が楽しいです。'),
+(2, 'セキュリティ対策', 'ユーザー認証について考えています。');
 
 ALTER USER 'user'@'%' IDENTIFIED WITH mysql_native_password BY 'password';
 FLUSH PRIVILEGES;
