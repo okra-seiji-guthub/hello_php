@@ -1,0 +1,40 @@
+
+
+git remote add origin https://git@github.com:okra-seiji-guthub/hello_php.git
+git remote set-url origin git@github.com:okra-seiji-guthub/hello_php.git
+
+git pull origin main --rebase
+
+git branch
+
+
+
+
+
+git@github.com:okra-seiji-guthub/hello_php.git
+
+docker ps
+docker-compose logs db
+docker-compose down -v
+
+docker-compose up -d --build
+docker-compose up -d 
+docker-compose exec db mysql -u user -p
+
+mysql> show variables like 'char%';
++--------------------------+--------------------------------+
+| Variable_name            | Value                          |
++--------------------------+--------------------------------+
+| character_set_client     | latin1                         |
+| character_set_connection | latin1                         |
+| character_set_database   | utf8mb4                        |
+| character_set_filesystem | binary                         |
+| character_set_results    | latin1                         |
+| character_set_server     | utf8mb4                        |
+| character_set_system     | utf8mb3                        |
+| character_sets_dir       | /usr/share/mysql-8.0/charsets/ |
++--------------------------+--------------------------------+
+8 rows in set (0.01 sec)
+
+mysql>
+
