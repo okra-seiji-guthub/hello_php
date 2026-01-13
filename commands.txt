@@ -38,3 +38,86 @@ mysql> show variables like 'char%';
 
 mysql>
 
+
+
+# docker経由でphpCake3.6 のプロジェクトフォルダー作成
+docker run --rm -v $(pwd):/app composer:2.2 \
+    composer create-project --prefer-dist cakephp/app:3.6.* /app/src
+
+docker run --rm -v "$(pwd):/app" composer:2.2 \
+    composer create-project --prefer-dist --ignore-platform-reqs cakephp/app:3.6.* /app/src
+
+
+
+################################################################
+# dockerでcakePHP プロジェクトファイルを作成しローカルにダウンロード
+################################################################
+docker run --name temp_cake -d composer:2.2 sleep 3600
+
+# プラグインの実行を許可する設定
+docker exec temp_cake composer config --global allow-plugins.cakephp/plugin-installer true
+
+# インストール実行
+MSYS_NO_PATHCONV=1 docker exec temp_cake composer create-project --prefer-dist --ignore-platform-reqs cakephp/app:3.6.* /tmp/cake
+
+# フォルダーをダウンロード ./src フォルダーがルートフォルダーにダウンロードされる
+docker cp temp_cake:/tmp/cake/. ./src
+
+# docker を削除
+docker rm -f temp_cake
+
+
+################################################################
+# php7.2 固定にする為、　./src/composer.json　に以下の設定を追加
+################################################################
+    "config": {
+        "sort-packages": true,
+        "platform": {
+            "php": "7.2.0"
+        },
+    }
+
+
+# Docker build
+docker-compose build --no-cache
+# Docker コンテナ実行
+docker-compose up -d
+# 停止
+docker-compose down -v
+
+# サンプルの管理画面を作成
+
+docker-compose exec db mysql -u user -ppassword my_database -e "
+CREATE TABLE posts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    body TEXT,
+    created DATETIME,
+    modified DATETIME
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"
+
+docker-compose exec app bin/cake bake all posts
+
+
+
+MSYS_NO_PATHCONV=1 docker exec temp_cake ls -R /app
+docker rm -f temp_cake
+
+
+docker-compose build --no-cache
+docker-compose up -d
+
+
+
+# 1. コンテナ内に入る
+docker-compose exec app bash
+
+# 2. 現在の「間違ったバージョン情報」が記録されたロックファイルを削除
+rm composer.lock
+
+# 3. vendor フォルダ（中身が 7.4 用になっている）を削除
+rm -rf vendor
+
+# 4. PHP 7.2 用のライブラリを再計算してインストール
+# composer.json の platform 指定のおかげで、今度は正しいバージョンが選ばれます
+composer install

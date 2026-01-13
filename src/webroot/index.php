@@ -1,39 +1,40 @@
-<!DOCTYPE html>
-<header>
-    <meta charset="UTF-8">
-    <html lang="ja">
-    <title>Hello PHP</title>
-</header>
+<?php
+/**
+ * The Front Controller for handling every request
+ *
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
+ * @since         0.2.9
+ * @license       MIT License (https://opensource.org/licenses/mit-license.php)
+ */
 
-<body>
-    <h1>Hello PHP</h1>
-    <?php
-    // 例: PDOで接続する場合
-    //$dsn = 'mysql:host=db;dbname=my_database;charset=utf8';
-    $dsn = 'mysql:host=db;dbname=my_database;charset=utf8mb4';
-    $user = 'user';
-    $password = 'password';
+// Check platform requirements
+require dirname(__DIR__) . '/config/requirements.php';
 
-    try {
-        $options = array(
-            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4',
-        );
-        $dbh = new PDO($dsn, $user, $password, $options);
-        echo "connected successfully";
-        echo "<p>" . $dbh->getAttribute(PDO::ATTR_CONNECTION_STATUS) . "</p>";
-        // データベースから値を取ってきたり、 データを挿入したりする処理 
-        $statement = $dbh->query('SELECT * FROM users');
-        echo "<h2>Users List:</h2>";
-        echo "<ul>";
-        while ($user = $statement->fetch()) {
-            echo "<li>";
-            printf("%s is %d years old.\n", $user['name'], $user['age']);
-            echo "</li>";
-        }
-        echo "</ul>";
-        //phpinfo();
-    } catch (PDOException $e) {
-        echo "connection failed: " . $e->getMessage();
+// For built-in server
+if (PHP_SAPI === 'cli-server') {
+    $_SERVER['PHP_SELF'] = '/' . basename(__FILE__);
+
+    $url = parse_url(urldecode($_SERVER['REQUEST_URI']));
+    $file = __DIR__ . $url['path'];
+    if (strpos($url['path'], '..') === false && strpos($url['path'], '.') !== false && is_file($file)) {
+        return false;
     }
-    ?>
-</body>
+}
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+use App\Application;
+use Cake\Http\Server;
+
+// Bind your application to the server.
+$server = new Server(new Application(dirname(__DIR__) . '/config'));
+
+// Run the request/response through the application and emit the response.
+$server->emit($server->run());
